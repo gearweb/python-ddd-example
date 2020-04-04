@@ -1,0 +1,108 @@
+syntax = "proto3"; 
+package grpc_pos;
+
+service POS { 
+  rpc CreateUser (CreateUserRequest) returns (OKResponse); 
+
+  rpc CreateCustomer (CreateCustomerRequest) returns (OKResponse);
+  rpc GetCustomer (GetCustomerRequest) returns (GetCustomerResponse); 
+
+  rpc GetStore (GetStoreRequest) returns (GetStoreResponse); 
+  rpc GetStores (GetStoresRequest) returns (GetStoresResponse); 
+
+  rpc GetCategory (GetCategoryRequest) returns (GetCategoryResponse); 
+
+  rpc CreateOrder (CreateOrderRequest) returns (OKResponse);
+
+  rpc CreateCustomerPayment (CreateCustomerPaymentRequest) returns (OKResponse);
+}
+
+message CreateCustomerPaymentRequest {
+	string customer_id = 1;
+	float amount = 2;
+}
+
+// ---- Order ---- 
+message OrderLine {
+	string product_id = 1;
+	int32 quantity = 2; 
+}
+
+message CreateOrderRequest{
+	string customer_id = 1;
+	string store_id = 2;
+	repeated OrderLine lines = 3;
+}
+
+// ---- Customer ---- 
+message CreateCustomerRequest {
+  enum PaymentType  {
+    CARD = 0;
+    CASH = 1;
+  }
+	string id = 1;
+	float amount = 2;
+	PaymentType type = 3;
+}
+
+message	GetCustomerResponse {
+	float balance = 1;
+}
+
+message GetCustomerRequest {
+	string id = 1;
+}
+
+// ---- General ---- 
+message OKResponse {
+	string success_msg = 1;
+	bool is_error = 2;
+	string error_msg = 3;
+}
+
+// ---- Products  ---- 
+message Product {
+	string name = 1;
+	string category = 2;
+	float price = 3;
+    string description = 4;
+}
+
+message GetStoreRequest {
+	string id = 1; 
+}
+
+message GetStoreResponse {
+	repeated Product products = 1;
+	bool is_error = 2;
+	string error_msg = 3;
+}
+
+// ---- User ---- 
+message CreateUserRequest { 
+  string id = 1; 
+}
+
+// ---- Stores  ---- 
+message GetStoresRequest {}
+
+message GetStoresResponse {
+	repeated Store stores = 1;
+}
+
+message Store {
+    string name = 1;
+    string description = 2;
+    repeated string products = 3;
+    repeated string users = 4;
+}
+
+// ---- Category ---- 
+message GetCategoryRequest {
+	string id = 1;
+}
+
+message GetCategoryResponse {
+	repeated Product products = 1;
+}
+

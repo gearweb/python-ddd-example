@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  ksqldb-server:
+    image: confluentinc/ksqldb-server:latest
+    hostname: ksqldb-server
+    container_name: ksqldb-server
+    ports:
+      - "8088:8088"
+    environment:
+      KSQL_LISTENERS: http://0.0.0.0:8088
+      KSQL_BOOTSTRAP_SERVERS: kafka-02.stagealot.com:6667
+      KSQL_KSQL_LOGGING_PROCESSING_STREAM_AUTO_CREATE: "true"
+      KSQL_KSQL_LOGGING_PROCESSING_TOPIC_AUTO_CREATE: "true"
+    network_mode: bridge
+
+  ksqldb-cli:
+    image: confluentinc/ksqldb-cli:latest
+    container_name: ksqldb-cli
+    depends_on:
+      - ksqldb-server
+    entrypoint: /bin/sh
+    tty: true
+    network_mode: bridge
